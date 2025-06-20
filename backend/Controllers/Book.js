@@ -32,7 +32,7 @@ exports.modifyBook = (req, res) => {
 }
 
 exports.deleteBook = (req, res) => {
-  Thing.deleteOne({ _id: req.params.id })
+  Book.deleteOne({ _id: req.params.id })
     .then(() => res.status(200).json({ message: 'Book supprimé !'}))
     .catch(error => res.status(400).json({ error }));
 }

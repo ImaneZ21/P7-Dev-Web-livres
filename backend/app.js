@@ -2,7 +2,8 @@ const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
 
-const bookRoutes = require("./Routes.js/Book.js")
+const bookRoutes = require("./Routes/Book.js")
+const authRoutes = require("./Routes/Auth.js")
 
 mongoose
   .connect(
@@ -26,22 +27,8 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use('/api', bookRoutes);
+app.use('/api/books', bookRoutes);
+app.use('/api/auth', authRoutes);
 
 
 module.exports = app;
-
-// export const API_ROUTES = {
-//   SIGN_UP: `${API_URL}/api/auth/signup`,
-//   SIGN_IN: `${API_URL}/api/auth/login`,
-//   BOOKS: `${API_URL}/api/books`,
-//   BEST_RATED: `${API_URL}/api/books/bestrating`,
-// };
-
-// export const APP_ROUTES = {
-//   SIGN_UP: '/Inscription',
-//   SIGN_IN: '/Connexion',
-//   ADD_BOOK: '/Ajouter',
-//   BOOK: '/livre/:id',
-//   UPDATE_BOOK: 'livre/modifier/:id',
-// };
