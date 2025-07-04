@@ -1,7 +1,6 @@
 const { json } = require("express");
 const Book = require("../Models/Book");
 const fs = require("fs");
-const mongoose = require("mongoose");
 
 //Create a book
 exports.createBook = (req, res) => {
@@ -41,7 +40,7 @@ exports.getBestRatings = (req, res) => {
     .catch((error) => res.status(400).json({ error }));
 };
 
-//ModifyOneBook
+//Modify One Book
 exports.modifyBook = (req, res) => {
   Book.findOne({ _id: req.params.id })
     .then((book) => {
@@ -71,7 +70,7 @@ exports.modifyBook = (req, res) => {
     });
 };
 
-//DeleteOneBook
+//Delete One Book
 exports.deleteBook = (req, res) => {
   Book.findOne({ _id: req.params.id })
     .then((book) => {
@@ -93,17 +92,17 @@ exports.deleteBook = (req, res) => {
     });
 };
 
-//GetOneBook
+//Get One Book
 exports.getOneBook = (req, res) => {
   Book.findOne({ _id: req.params.id })
     .then((book) => res.status(200).json(book))
     .catch((error) => res.status(400).json({ error }));
 };
 
-//RateOneBook
+//Rate One Book
 exports.rateOneBook = (req, res) => {
   const userId = req.auth.userId;
-  const grade = Number(req.body.grade);
+  const grade = Number(req.body.rating); //bdd grade /front rating
 
   Book.findOne({ _id: req.params.id })
     .then((book) => {
