@@ -17,15 +17,6 @@ router.put("/:id", auth, multer, BookControllers.modifyBook);
 
 router.delete("/:id", auth, BookControllers.deleteBook);
 
-// router.post("/:id/rating", (req, res) => {
-//   delete req.body._id;
-//   const book = new Book({
-//     ...req.body,
-//   });
-//   book
-//     .save()
-//     .then(() => res.status(201).json(book))
-//     .catch((error) => res.status(400).json({ error }));
-// });
+router.post("/:id/rating", auth, BookControllers.rateOneBook);
 
 module.exports = router;

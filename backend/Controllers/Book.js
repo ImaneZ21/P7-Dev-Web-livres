@@ -1,6 +1,7 @@
 const { json } = require("express");
 const Book = require("../Models/Book");
 const fs = require("fs");
+const mongoose = require("mongoose");
 
 //Create a book
 exports.createBook = (req, res) => {
@@ -40,6 +41,7 @@ exports.getBestRatings = (req, res) => {
     .catch((error) => res.status(400).json({ error }));
 };
 
+//ModifyOneBook
 exports.modifyBook = (req, res) => {
   Book.findOne({ _id: req.params.id })
     .then((book) => {
@@ -69,6 +71,7 @@ exports.modifyBook = (req, res) => {
     });
 };
 
+//DeleteOneBook
 exports.deleteBook = (req, res) => {
   Book.findOne({ _id: req.params.id })
     .then((book) => {
@@ -90,8 +93,38 @@ exports.deleteBook = (req, res) => {
     });
 };
 
+//GetOneBook
 exports.getOneBook = (req, res) => {
   Book.findOne({ _id: req.params.id })
     .then((book) => res.status(200).json(book))
+    .catch((error) => res.status(400).json({ error }));
+};
+
+//RateOneBook
+exports.rateOneBook = (req, res) => {
+  const userId = req.auth.userId;
+  const grade = Number(req.body.grade);
+
+  Book.findOne({ _id: req.params.id })
+    .then((book) => {
+      if (book.ratings.find((rating) => rating.userId === userId)) {
+        return res.status(401).json({ message: "book déjà noté" });
+      }
+
+      if (grade < 1 || grade > 5) {
+        return res.status(401).json({ message: "La note doit être comprise entre 0 et 5" });
+      }
+
+      book.ratings.push({ userId, grade });
+
+      const total = book.ratings.reduce((sum, rating) => sum + rating.grade, 0);
+      const averageSum = total / book.ratings.length;
+      book.averageRating = Math.round(averageSum * 10) / 10;
+
+      book
+        .save()
+        .then(() => res.status(200).json({ book }))
+        .catch((error) => res.status(500).json({ error }));
+    })
     .catch((error) => res.status(400).json({ error }));
 };
