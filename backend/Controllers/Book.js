@@ -81,7 +81,7 @@ exports.deleteBook = (req, res) => {
         fs.unlink(`images/${filename}`, () => {
           Book.deleteOne({ _id: req.params.id })
             .then(() => {
-              res.status(204).json({ message: "Book supprimé !" });
+              res.status(201).json({ message: "Book supprimé !" });
             })
             .catch((error) => res.status(401).json({ error }));
         });
@@ -102,7 +102,7 @@ exports.getOneBook = (req, res) => {
 //Rate One Book
 exports.rateOneBook = (req, res) => {
   const userId = req.auth.userId;
-  const grade = Number(req.body.rating); //bdd grade /front rating
+  const grade = Number(req.body.rating); //database --> grade / front --> rating
 
   Book.findOne({ _id: req.params.id })
     .then((book) => {
@@ -111,14 +111,16 @@ exports.rateOneBook = (req, res) => {
       }
 
       if (grade < 1 || grade > 5) {
-        return res.status(401).json({ message: "La note doit être comprise entre 0 et 5" });
+        return res
+          .status(401)
+          .json({ message: "La note doit être comprise entre 0 et 5" });
       }
 
       book.ratings.push({ userId, grade });
 
       const total = book.ratings.reduce((sum, rating) => sum + rating.grade, 0);
       const averageSum = total / book.ratings.length;
-      book.averageRating = Math.round(averageSum * 10) / 10;
+      book.averageRating = averageSum;
 
       book
         .save()
