@@ -42,6 +42,11 @@ exports.createUser = (req, res) => {
         email: req.body.email,
         password: hash,
       });
+      
+      if (req.body.password === ""){
+        return res.status(401).json({ message: "Mot de passe vide" });
+      }
+
       user
         .save()
         .then(() => res.status(201).json({ message: "User créé" }))
