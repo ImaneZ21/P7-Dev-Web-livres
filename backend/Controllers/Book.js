@@ -7,6 +7,10 @@ exports.createBook = (req, res) => {
   const bookObject = JSON.parse(req.body.book);
   delete bookObject._id;
   delete bookObject._userId;
+
+  if(!req.file){
+    return res.status(400).json({ message: "Champs fichier obligatoire" });
+  }
   const book = new Book({
     ...bookObject,
     userId: req.auth.userId,
