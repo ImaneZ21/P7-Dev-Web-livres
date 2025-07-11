@@ -124,7 +124,13 @@ exports.rateOneBook = (req, res) => {
 
       book
         .save()
-        .then(() => res.status(200).json({ book }))
+        .then((book) => {
+          const bookRes = {
+            ...book._doc,
+            id: book._id
+          };
+          res.status(200).json(bookRes); 
+        })
         .catch((error) => res.status(500).json({ error }));
     })
     .catch((error) => res.status(400).json({ error }));
